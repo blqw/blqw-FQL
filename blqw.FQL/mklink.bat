@@ -1,0 +1,1 @@
+mklink /h /j core ..\..\blqw-core\blqw.Core
