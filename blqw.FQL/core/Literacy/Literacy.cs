@@ -535,7 +535,7 @@ namespace blqw
         /// </summary>
         public static LiteracySetter CreateSetter(FieldInfo field)
         {
-            if (field == null)
+            if (field == null || field.IsLiteral)
             {
                 return null;
             }
