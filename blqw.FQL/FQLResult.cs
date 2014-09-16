@@ -24,7 +24,7 @@ namespace blqw.Data
         public readonly DbParameter[] DbParameters;
         /// <summary> 设置返回值的回调函数
         /// </summary>
-        private readonly ThreadStart Callback;
+        internal readonly ThreadStart Callback;
         /// <summary> 导入返回参数
         /// </summary>
         public void ImportOutParameter()

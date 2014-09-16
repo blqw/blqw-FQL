@@ -11,10 +11,14 @@
 对于拓展现有项目功能非常方便  
 
 ##更新日志
+
+#### 2014.09.16
+* 优化格式化过程
+
 #### 2014.09.14
 * 同步更新 [blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)
 
-* 2014.09.13
+#### 2014.09.13
 第一版完成,单元测试覆盖率80%  
 使用.Net2.0编译,项目依赖[blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)  
 

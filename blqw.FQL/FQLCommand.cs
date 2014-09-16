@@ -17,8 +17,15 @@ namespace blqw.Data
             : this()
         {
             _concats = new string[5];
-            _concats[0] = "p" + flag;
-            _concats[2] = "_";
+            _concats[0] = "p";
+            if (flag == null)
+            {
+                _concats[2] = "_";
+            }
+            else
+            {
+                _concats[2] = "_" + flag + "_";
+            }
         }
         /// <summary> 空格分隔符
         /// </summary>
@@ -168,7 +175,6 @@ namespace blqw.Data
 
             _suffix = 0;
             _formatString = number + ":" + format;
-            ParseFormat(format);
             //将number转为整型,且不能大于Arguments的个数
             int index;
             if (int.TryParse(number, out index) && index >= 0)
@@ -185,6 +191,7 @@ namespace blqw.Data
 
             //使用number得到参数
             var value = Arguments[index];
+            ParseFormat(format);
             #region FormatNull
             //如果参数为null,则不能不是返回参数,也不能有name
             if (value == null || value is DBNull)
@@ -391,7 +398,8 @@ namespace blqw.Data
             {
                 if (arr.Length == 1) //如果参数只有一段,无法获取name
                 {
-                    throw new FormatException(ErrMsg("返回参数必须有名称"));
+                    _name = null;
+                    return;
                 }
                 _name = arr[1];
             }
