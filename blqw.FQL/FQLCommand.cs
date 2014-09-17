@@ -64,7 +64,7 @@ namespace blqw.Data
             }
             else
             {
-                pname = string.Concat(_concats[0], _concats[1], _concats[2],_name);
+                pname = string.Concat(_concats[0], _concats[1], _concats[2], _name);
             }
 
             if (Values.ContainsKey(pname))
@@ -83,7 +83,7 @@ namespace blqw.Data
                 p.Value = op.Value;
                 p.DbType = op.DbType;
                 p.Direction = op.Direction;
-                p.ParameterName = op.ParameterName;
+                p.ParameterName = _name ?? op.ParameterName;
                 if (_isOut)
                 {
                     p.Direction = _isIn ? ParameterDirection.InputOutput : ParameterDirection.Output;
@@ -250,22 +250,35 @@ namespace blqw.Data
                         throw new FormatException(ErrMsg("没有找到元素 " + _name));
                     }
                     value = dict[_name];
-                    var p = AppendValues(value);
-                    if (p != null && _isOut)
+                    if (_isOut)
                     {
                         if (dict.IsReadOnly)
                         {
                             throw new ReadOnlyException(ErrMsg("参数为只读,不能使用关键字out/ref"));
                         }
-                        var name = _name;
-                        Callback += delegate { dict[name] = p.Value; };
+                        if (value == null)
+                        {
+                            throw new FormatException(ErrMsg("无法从<NULL>中推断返回值的类型"));
+                        }
+                        var p = value as DbParameter;
+                        if (p != null)
+                        {
+                            AppendValues(p);
+                            return;
+                        }
+                        p = AppendValues(value as Type ?? value.GetType());
+                        if (p != null)
+                        {
+                            var name = _name;
+                            Callback += delegate { dict[name] = p.Value; };
+                        }
+                    }
+                    else
+                    {
+                        AppendValues(value);
                     }
                     return;
                 case TypeCodes.DbParameter:
-                    if (_name != null)
-                    {
-                        throw new FormatException(ErrMsg("当参数是 DbParameter 类型时,不能使用参数名"));
-                    }
                     AppendValues(value);
                     return;
                 case TypeCodes.AnonymousType:
@@ -319,7 +332,15 @@ namespace blqw.Data
                 throw new FormatException(ErrMsg("结构体 ,不能使用关键字out/ref"));
             }
             //非in参数,传入DbType
-            DbParameter p = AppendValues(_isIn ? prop.GetValue(target) : prop.MemberType);
+            DbParameter p;
+            if (!_isIn && prop.TypeCodes != TypeCodes.DbParameter)
+            {
+                p = AppendValues(prop.MemberType);
+            }
+            else
+            {
+                p = AppendValues(prop.GetValue(target));
+            }
 
             if (p != null && prop.CanWrite == false)
             {
