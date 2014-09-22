@@ -1,4 +1,4 @@
-用 string.Format 的方式去写sql~   
+像 string.Format 那样去写sql~   
   
 ##特色
 #### 轻量
@@ -10,15 +10,34 @@
 可以方便于各种ORM或原生ADO.NET结合使用,简单封装后,使用更灵活  
 对于拓展现有项目功能非常方便  
 
+*ps:项目依赖[blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)*  
+
 ##更新日志
 
 #### 2014.09.16
 * 优化格式化过程
 
 #### 2014.09.14
-* 同步更新 [blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)
+* 同步更新 blqw.Literacy  
 
 #### 2014.09.13
 第一版完成,单元测试覆盖率80%  
-使用.Net2.0编译,项目依赖[blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)  
+使用.Net2.0编译,
 
+##Demo 演示  
+```
+static int ExecuteNonQuery(string sql, object[] args)
+{
+    var fql = FQL.Format(sql, args);
+    using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
+    using (var cmd = conn.CreateCommand())
+    {
+        cmd.CommandText = fql.CommandText;                  //设置CommandText
+        cmd.Parameters.AddRange(fql.DbParameters);          //设定Parameters
+        var p = new SqlParameter("totle", 0) { Direction = ParameterDirection.Output };
+        cmd.Parameters.Add(p);
+        conn.Open();
+        return cmd.ExecuteNonQuery();
+    }
+}
+```

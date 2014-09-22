@@ -75,6 +75,21 @@ namespace Demo
             }
 
         }
+
+static int ExecuteNonQuery(string sql, object[] args)
+{
+    var fql = FQL.Format(sql, args);
+    using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
+    using (var cmd = conn.CreateCommand())
+    {
+        cmd.CommandText = fql.CommandText;                  //设置CommandText
+        cmd.Parameters.AddRange(fql.DbParameters);          //设定Parameters
+        var p = new SqlParameter("totle", 0) { Direction = ParameterDirection.Output };
+        cmd.Parameters.Add(p);
+        conn.Open();
+        return cmd.ExecuteNonQuery();
+    }
+}
     }
 
 }

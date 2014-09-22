@@ -5,7 +5,7 @@ using System.Text;
 
 namespace blqw.Data
 {
-    class SqlServerFQL : IFQLProvider
+    public class SqlServerFQL : IFQLProvider
     {
         internal SqlServerFQL()
         {
@@ -24,7 +24,7 @@ namespace blqw.Data
 
         public System.Data.Common.DbParameter CreateDbParameter(DbType dbType)
         {
-            return new System.Data.SqlClient.SqlParameter() { DbType = dbType,Size = 10 };
+            return new System.Data.SqlClient.SqlParameter() { DbType = dbType };
         }
     }
 }
