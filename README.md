@@ -1,30 +1,30 @@
-Ïñ string.Format ÄÇÑùÈ¥Ğ´sql~   
+åƒ string.Format é‚£æ ·å»å†™sql~   
   
-##ÌØÉ«
-#### ÇáÁ¿
-ºËĞÄ¶ÔÏó `FQL`,`FQLResult`,`IFQLProvider`  
-#### ¼òµ¥
-ºËĞÄ·½·¨ `FQL.Format` ·µ»Ø `FQLResult` ¶ÔÏó  
-`FQLResult` ¶ÔÏóÓĞÁ½¸öÊôĞÔ `CommandText`,`DbParameters`;Ò»¸ö·½·¨`ImportOutParameter`   
-#### Áé»î
-¿ÉÒÔ·½±ãÓÚ¸÷ÖÖORM»òÔ­ÉúADO.NET½áºÏÊ¹ÓÃ,¼òµ¥·â×°ºó,Ê¹ÓÃ¸üÁé»î  
-¶ÔÓÚÍØÕ¹ÏÖÓĞÏîÄ¿¹¦ÄÜ·Ç³£·½±ã  
+##ç‰¹è‰²
+#### è½»é‡
+æ ¸å¿ƒå¯¹è±¡ `FQL`,`FQLResult`,`IFQLProvider`  
+#### ç®€å•
+æ ¸å¿ƒæ–¹æ³• `FQL.Format` è¿”å› `FQLResult` å¯¹è±¡  
+`FQLResult` å¯¹è±¡æœ‰ä¸¤ä¸ªå±æ€§ `CommandText`,`DbParameters`;ä¸€ä¸ªæ–¹æ³•`ImportOutParameter`   
+#### çµæ´»
+å¯ä»¥æ–¹ä¾¿äºå„ç§ORMæˆ–åŸç”ŸADO.NETç»“åˆä½¿ç”¨,ç®€å•å°è£…å,ä½¿ç”¨æ›´çµæ´»  
+å¯¹äºæ‹“å±•ç°æœ‰é¡¹ç›®åŠŸèƒ½éå¸¸æ–¹ä¾¿  
 
-*ps:ÏîÄ¿ÒÀÀµ[blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)*  
+*ps:é¡¹ç›®ä¾èµ–[blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)*  
 
-##¸üĞÂÈÕÖ¾
+##æ›´æ–°æ—¥å¿—
 
 #### 2014.09.16
-* ÓÅ»¯¸ñÊ½»¯¹ı³Ì
+* ä¼˜åŒ–æ ¼å¼åŒ–è¿‡ç¨‹
 
 #### 2014.09.14
-* Í¬²½¸üĞÂ blqw.Literacy  
+* åŒæ­¥æ›´æ–° blqw.Literacy  
 
 #### 2014.09.13
-µÚÒ»°æÍê³É,µ¥Ôª²âÊÔ¸²¸ÇÂÊ80%  
-Ê¹ÓÃ.Net2.0±àÒë,
+ç¬¬ä¸€ç‰ˆå®Œæˆ,å•å…ƒæµ‹è¯•è¦†ç›–ç‡80%  
+ä½¿ç”¨.Net2.0ç¼–è¯‘,
 
-##Demo ÑİÊ¾  
+##Demo æ¼”ç¤º  
 ```csharp
 static int ExecuteNonQuery(string sql, object[] args)
 {
@@ -32,13 +32,18 @@ static int ExecuteNonQuery(string sql, object[] args)
     using (var cmd = conn.CreateCommand())
     {
         var fql = FQL.Format(sql, args);
-        cmd.CommandText = fql.CommandText;                  //ÉèÖÃCommandText
-        cmd.Parameters.AddRange(fql.DbParameters);          //Éè¶¨Parameters
+        cmd.CommandText = fql.CommandText;                  //è®¾ç½®CommandText
+        cmd.Parameters.AddRange(fql.DbParameters);          //è®¾å®šParameters
         conn.Open();
         return cmd.ExecuteNonQuery();
     }
 }
 ```
 ```csharp
-var count = ExecuteNonQuery("insert into users(name, address) values({0},{1})","blqw","º¼Öİ");
+var count = ExecuteNonQuery("insert into users(name, address) values({0},{1})","blqw","æ­å·");
+```
+æˆ–
+```csharp
+var user = new User { Name = "blqw", Address = "æ­å·" };
+var count = ExecuteNonQuery("insert into users(name, address) values({0:name},{0:address})",user);
 ```
