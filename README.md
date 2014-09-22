@@ -34,10 +34,11 @@ static int ExecuteNonQuery(string sql, object[] args)
     {
         cmd.CommandText = fql.CommandText;                  //设置CommandText
         cmd.Parameters.AddRange(fql.DbParameters);          //设定Parameters
-        var p = new SqlParameter("totle", 0) { Direction = ParameterDirection.Output };
-        cmd.Parameters.Add(p);
         conn.Open();
         return cmd.ExecuteNonQuery();
     }
 }
+```
+```
+var count = ExecuteNonQuery("insert into users(name, address) values({0},{1})","blqw","杭州");
 ```
