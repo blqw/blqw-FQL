@@ -28,10 +28,10 @@
 ```
 static int ExecuteNonQuery(string sql, object[] args)
 {
-    var fql = FQL.Format(sql, args);
     using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
     using (var cmd = conn.CreateCommand())
     {
+        var fql = FQL.Format(sql, args);
         cmd.CommandText = fql.CommandText;                  //…Ë÷√CommandText
         cmd.Parameters.AddRange(fql.DbParameters);          //…Ë∂®Parameters
         conn.Open();
