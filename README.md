@@ -35,7 +35,9 @@ static int ExecuteNonQuery(string sql, object[] args)
         cmd.CommandText = fql.CommandText;                  //设置CommandText
         cmd.Parameters.AddRange(fql.DbParameters);          //设定Parameters
         conn.Open();
-        return cmd.ExecuteNonQuery();
+        var r = cmd.ExecuteNonQuery();
+        fql.ImportOutParameter();                           //将out类型的值导入到args参数
+        return r;
     }
 }
 ```
