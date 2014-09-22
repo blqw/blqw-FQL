@@ -44,6 +44,10 @@ var count = ExecuteNonQuery("insert into users(name, address) values({0},{1})","
 ```
 或
 ```csharp
-var user = new User { Name = "blqw", Address = "杭州" };
-var count = ExecuteNonQuery("insert into users(name, address) values({0:name},{0:address})",user);
+var user = new User { ID = 0, Name = "blqw", Address = "杭州" };
+var count = ExecuteNonQuery(
+        @"insert into users(name, address) values({0:name},{0:address});
+          set {0:out id} = @@identity;"
+        ,user);
+return count == 1 ? user.ID : -1;
 ```
