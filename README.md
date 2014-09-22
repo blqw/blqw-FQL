@@ -25,7 +25,7 @@
 使用.Net2.0编译,
 
 ##Demo 演示  
-```
+```csharp
 static int ExecuteNonQuery(string sql, object[] args)
 {
     using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
@@ -39,6 +39,6 @@ static int ExecuteNonQuery(string sql, object[] args)
     }
 }
 ```
-```
+```csharp
 var count = ExecuteNonQuery("insert into users(name, address) values({0},{1})","blqw","杭州");
 ```
