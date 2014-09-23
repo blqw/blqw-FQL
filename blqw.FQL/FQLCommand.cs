@@ -78,7 +78,7 @@ namespace blqw.Data
             #region DbParameter
             if (op != null)
             {
-                var p = Provider.CreateDbParameter(op.DbType);
+                var p = Provider.CreateDbParameter(op.DbType, null);
                 p.Size = op.Size;
                 p.Value = op.Value;
                 p.DbType = op.DbType;
@@ -113,7 +113,7 @@ namespace blqw.Data
                 {
                     throw new FormatException(ErrMsg("无法从 typeof(object) 推断返回值的类型"));
                 }
-                var p = Provider.CreateDbParameter(Convert2.TypeToDbType(t));
+                var p = Provider.CreateDbParameter(Convert2.TypeToDbType(t), t);
                 p.ParameterName = pname;
                 SqlBuffer.Append(Provider.ParameterPrefix);
                 SqlBuffer.Append(p.ParameterName);

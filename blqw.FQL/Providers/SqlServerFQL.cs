@@ -7,11 +7,6 @@ namespace blqw.Data
 {
     public class SqlServerFQL : IFQLProvider
     {
-        internal SqlServerFQL()
-        {
-
-        }
-
         public string ParameterPrefix
         {
             get { return "@"; }
@@ -22,7 +17,7 @@ namespace blqw.Data
             return new System.Data.SqlClient.SqlParameter() { Value = value };
         }
 
-        public System.Data.Common.DbParameter CreateDbParameter(DbType dbType)
+        public System.Data.Common.DbParameter CreateDbParameter(DbType dbType, Type type)
         {
             return new System.Data.SqlClient.SqlParameter() { DbType = dbType };
         }

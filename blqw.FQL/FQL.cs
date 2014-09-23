@@ -42,7 +42,13 @@ namespace blqw.Data
             return Format(provider, sql, args, null);
         }
 
-        public static FQLResult Format(IFQLProvider provider, string sql, object[] args, string argFlag)
+        /// <summary> 使用 指定的IFQLProvider 作为格式化机制,格式sql语句
+        /// </summary>
+        /// <param name="provider">用于格式化sql语句的格式化机制</param>
+        /// <param name="sql">待格式化的sql语句</param>
+        /// <param name="args">包含零个或多个Sql参数</param>
+        /// <param name="propPrefix">参数名称前缀</param>
+        public static FQLResult Format(IFQLProvider provider, string sql, object[] args, string propPrefix)
         {
             if (sql == null || sql.Length == 0)
             {
@@ -58,7 +64,7 @@ namespace blqw.Data
                 provider = CurrentFQLProvider;
             }
             var argsCount = args.Length;
-            var command = new FQLCommand(argFlag) {
+            var command = new FQLCommand(propPrefix) {
                 Values = new Dictionary<string, DbParameter>(argsCount),
                 Provider = provider,
                 SqlBuffer = new StringBuilder(sqlLength + argsCount * 3),

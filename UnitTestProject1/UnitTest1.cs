@@ -347,7 +347,7 @@ select * from roles where user_id in (@p0_1,@p0_2,@p0_3,@p0_4,@p0_5);");
             }
             catch (Exception)
             {
-                
+
             }
         }
     }

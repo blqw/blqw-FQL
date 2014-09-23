@@ -122,7 +122,7 @@ namespace blqw
             {
                 return DbType.Xml;
             }
-            throw new InvalidCastException("无法将" + TypesHelper.DisplayName(type) + "转换为DbType");
+            return DbType.Object;
         }
 
         public static Type DbTypeToType(DbType dbtype)

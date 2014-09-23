@@ -18,6 +18,6 @@ namespace blqw.Data
         DbParameter CreateDbParameter(object value);
         /// <summary> 根据DbType类型创建DbParameter对象
         /// </summary>
-        DbParameter CreateDbParameter(DbType dbType);
+        DbParameter CreateDbParameter(DbType dbType, Type type);
     }
 }
