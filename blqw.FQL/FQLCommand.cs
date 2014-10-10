@@ -312,7 +312,12 @@ namespace blqw.Data
             var prop = lit.Property[_name];
             if (prop == null)
             {
-                throw new FormatException(ErrMsg("没有找到名为 " + _name + " 的公开属性"));
+                lit.Load.PublicField();
+                prop = lit.Field[_name];
+                if (prop == null)
+                {
+                    throw new FormatException(ErrMsg("没有找到名为 " + _name + " 的公开属性或字段"));
+                }
             }
             if (_isIn && prop.CanRead == false)
             {
