@@ -21,7 +21,7 @@ namespace blqw
             // 1.
             ConsoleColor currentForeColor = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(name);
+            Console.WriteLine(name + "\t执行次数:" + iteration);
 
             // 2.
             GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced);
@@ -51,7 +51,7 @@ namespace blqw
             if (GC.MaxGeneration >= 0) args[3] = GC.CollectionCount(0) - gcCounts[0];
             if (GC.MaxGeneration >= 1) args[4] = GC.CollectionCount(1) - gcCounts[1];
             if (GC.MaxGeneration >= 2) args[5] = GC.CollectionCount(2) - gcCounts[2];
-            Console.WriteLine(format,args);
+            Console.WriteLine(format, args);
             Console.WriteLine();
         }
 

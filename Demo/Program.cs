@@ -14,6 +14,28 @@ namespace Demo
     {
         static void Main(string[] args)
         {
+            CodeTimer.Initialize();
+
+            CodeTimer.Time("a", 4, () => {
+                using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
+                using (var cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = "select count(1) from sys.objects";
+                    conn.Open();
+                }
+            });
+
+            using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
+            {
+                conn.Open();
+                CodeTimer.Time("b", 4, () => {
+                    using (var cmd = conn.CreateCommand())
+                    {
+                        cmd.CommandText = "select count(1) from sys.objects";
+                    }
+                });
+            }
+            return;
             // FQL.CurrentFQLProvider = FQL.SqlServer; //设定默认FQL格式化机制,因为系统默认就是SqlServer,所以可以省略
 
             var keyword = "sys";
@@ -52,7 +74,6 @@ namespace Demo
             }
         }
 
-
         static void SearchCountDemo(string name, string type, string type_desc)
         {
             var where = new Where();
@@ -76,20 +97,20 @@ namespace Demo
 
         }
 
-static int ExecuteNonQuery(string sql, object[] args)
-{
-    var fql = FQL.Format(sql, args);
-    using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
-    using (var cmd = conn.CreateCommand())
-    {
-        cmd.CommandText = fql.CommandText;                  //设置CommandText
-        cmd.Parameters.AddRange(fql.DbParameters);          //设定Parameters
-        var p = new SqlParameter("totle", 0) { Direction = ParameterDirection.Output };
-        cmd.Parameters.Add(p);
-        conn.Open();
-        return cmd.ExecuteNonQuery();
-    }
-}
+        static int ExecuteNonQuery(string sql, object[] args)
+        {
+            var fql = FQL.Format(sql, args);
+            using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = fql.CommandText;                  //设置CommandText
+                cmd.Parameters.AddRange(fql.DbParameters);          //设定Parameters
+                var p = new SqlParameter("totle", 0) { Direction = ParameterDirection.Output };
+                cmd.Parameters.Add(p);
+                conn.Open();
+                return cmd.ExecuteNonQuery();
+            }
+        }
     }
 
 }
