@@ -29,7 +29,7 @@ namespace blqw.Data
         /// <param name="args">包含零个或多个Sql参数</param>
         public static FQLResult Format(string sql, params object[] args)
         {
-            return Format(CurrentFQLProvider, sql, args, null);
+            return Format(CurrentFQLProvider, 0, sql, args);
         }
 
         /// <summary> 使用 指定的IFQLProvider 作为格式化机制,格式sql语句
@@ -39,7 +39,7 @@ namespace blqw.Data
         /// <param name="args">包含零个或多个Sql参数</param>
         public static FQLResult Format(IFQLProvider provider, string sql, params object[] args)
         {
-            return Format(provider, sql, args, null);
+            return Format(provider, 0, sql, args);
         }
 
         /// <summary> 使用 指定的IFQLProvider 作为格式化机制,格式sql语句
@@ -48,23 +48,23 @@ namespace blqw.Data
         /// <param name="sql">待格式化的sql语句</param>
         /// <param name="args">包含零个或多个Sql参数</param>
         /// <param name="propPrefix">参数名称前缀</param>
-        public static FQLResult Format(IFQLProvider provider, string sql, object[] args, string propPrefix)
+        public static FQLResult Format(IFQLProvider provider, int startNumber, string sql, object[] args)
         {
             if (sql == null || sql.Length == 0)
             {
                 throw new ArgumentNullException("sql");
             }
-            var sqlLength = sql.Length;
-            if (sqlLength < 3 || args == null || args.Length == 0)
-            {
-                return new FQLResult(sql, new DbParameter[0], null);
-            }
             if (provider == null)
             {
                 provider = CurrentFQLProvider;
             }
+            var sqlLength = sql.Length;
+            if (sqlLength < 3 || args == null || args.Length == 0)
+            {
+                return new FQLResult(provider, sql, new DbParameter[0], null, 0);
+            }
             var argsCount = args.Length;
-            var command = new FQLCommand(propPrefix) {
+            var command = new FQLCommand() {
                 Values = new Dictionary<string, DbParameter>(argsCount),
                 Provider = provider,
                 SqlBuffer = new StringBuilder(sqlLength + argsCount * 3),
@@ -134,7 +134,7 @@ namespace blqw.Data
                                 {
                                     format = new string(p, curr, i - curr);
                                 }
-                                command.AppendFormat(number, format);
+                                command.AppendFormat(number, format, startNumber);
                                 state = 0;
                                 curr = i + 1;
                                 break;
@@ -158,7 +158,7 @@ namespace blqw.Data
                     }
                 }
             }
-            return new FQLResult(buffer.ToString(), command.GetParameters(), command.Callback);
+            return new FQLResult(provider, buffer.ToString(), command.GetParameters(), command.Callback, args.Length);
         }
     }
 }

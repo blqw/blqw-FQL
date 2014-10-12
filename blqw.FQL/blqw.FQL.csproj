@@ -50,8 +50,11 @@
     <Compile Include="core\Literacy\TypesHelper.cs" />
     <Compile Include="FQL.cs" />
     <Compile Include="FQLCommand.cs" />
+    <Compile Include="FQLConcat.cs" />
     <Compile Include="FQLResult.cs" />
-    <Compile Include="IFQLProvider.cs" />
+    <Compile Include="interface\IFQLConcat.cs" />
+    <Compile Include="interface\IFQLProvider.cs" />
+    <Compile Include="interface\IFQLResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\SqlServerFQL.cs" />
   </ItemGroup>

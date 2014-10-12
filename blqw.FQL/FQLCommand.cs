@@ -13,20 +13,6 @@ namespace blqw.Data
     /// </summary>
     struct FQLCommand
     {
-        public FQLCommand(string flag)
-            : this()
-        {
-            _concats = new string[5];
-            _concats[0] = "p";
-            if (flag == null)
-            {
-                _concats[2] = "_";
-            }
-            else
-            {
-                _concats[2] = "_" + flag + "_";
-            }
-        }
         /// <summary> 空格分隔符
         /// </summary>
         private readonly static char[] Separator = { ' ' };
@@ -42,7 +28,7 @@ namespace blqw.Data
         private bool _isIn;
         private string _formatString;
         private int _suffix;
-        private string[] _concats;
+        private string _number;
 
         private DbParameter AppendValues(object value)
         {
@@ -52,19 +38,19 @@ namespace blqw.Data
                 return null;
             }
             string pname;
-            if (_suffix > 0)
+            if (_name == null)
             {
-                _concats[3] = _name;
-                _concats[4] = _suffix.ToString();
-                pname = string.Concat(_concats);
-            }
-            else if (_name == null)
-            {
-                pname = _concats[0] + _concats[1];
+                if (_suffix == 0)
+                    pname = string.Concat("p", _number);
+                else
+                    pname = string.Concat("p", _number, "_", _suffix.ToString());
             }
             else
             {
-                pname = string.Concat(_concats[0], _concats[1], _concats[2], _name);
+                if (_suffix == 0)
+                    pname = string.Concat("p", _number, "_", _name);
+                else
+                    pname = string.Concat("p", _number, "_", _name, "_", _suffix.ToString());
             }
 
             if (Values.ContainsKey(pname))
@@ -168,10 +154,8 @@ namespace blqw.Data
                 return p;
             }
         }
-        public void AppendFormat(string number, string format)
+        public void AppendFormat(string number, string format, int offset = 0)
         {
-            _concats[1] = number;
-            _concats[4] = null;
 
             _suffix = 0;
             _formatString = number + ":" + format;
@@ -188,6 +172,7 @@ namespace blqw.Data
             {
                 throw new FormatException(ErrMsg("参数索引{" + number + "}错误"));
             }
+            _number = offset == 0 ? number : (index + offset).ToString();
 
             //使用number得到参数
             var value = Arguments[index];

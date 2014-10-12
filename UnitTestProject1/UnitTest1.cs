@@ -117,7 +117,7 @@ namespace UnitTestProject1
 
 
             result = FQL.Format("select * from users where id in ({0:ids},{0:id},{1}) and name = {0:name}", obj, 1);
-            result.Assert("select * from users where id in (@p0_ids1,@p0_ids2,@p0_ids3,@p0_ids4,@p0_ids5,@p0_id,@p1) and name = @p0_name");
+            result.Assert("select * from users where id in (@p0_ids_1,@p0_ids_2,@p0_ids_3,@p0_ids_4,@p0_ids_5,@p0_id,@p1) and name = @p0_name");
             Assert.AreEqual(obj.IDs[0], result.DbParameters[0].Value);
             Assert.AreEqual(obj.IDs[1], result.DbParameters[1].Value);
             Assert.AreEqual(obj.IDs[2], result.DbParameters[2].Value);
