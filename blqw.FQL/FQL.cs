@@ -17,7 +17,7 @@ namespace blqw.Data
             CurrentFQLProvider = SqlServer = new SqlServerFQL();
         }
 
-        public readonly static IFQLProvider SqlServer;
+        readonly static IFQLProvider SqlServer;
 
         /// <summary> 设置或获取当前使用的格式化的机制,默认为MsSql
         /// </summary>
@@ -27,7 +27,7 @@ namespace blqw.Data
         /// </summary>
         /// <param name="sql">待格式化的sql语句</param>
         /// <param name="args">包含零个或多个Sql参数</param>
-        public static FQLResult Format(string sql, params object[] args)
+        public static IFQLResult Format(string sql, params object[] args)
         {
             return Format(CurrentFQLProvider, 0, sql, args);
         }
@@ -37,7 +37,7 @@ namespace blqw.Data
         /// <param name="provider">用于格式化sql语句的格式化机制</param>
         /// <param name="sql">待格式化的sql语句</param>
         /// <param name="args">包含零个或多个Sql参数</param>
-        public static FQLResult Format(IFQLProvider provider, string sql, params object[] args)
+        public static IFQLResult Format(IFQLProvider provider, string sql, params object[] args)
         {
             return Format(provider, 0, sql, args);
         }
@@ -48,7 +48,7 @@ namespace blqw.Data
         /// <param name="sql">待格式化的sql语句</param>
         /// <param name="args">包含零个或多个Sql参数</param>
         /// <param name="propPrefix">参数名称前缀</param>
-        public static FQLResult Format(IFQLProvider provider, int startNumber, string sql, object[] args)
+        public static IFQLResult Format(IFQLProvider provider, int startNumber, string sql, object[] args)
         {
             if (sql == null || sql.Length == 0)
             {

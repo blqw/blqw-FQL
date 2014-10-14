@@ -14,6 +14,10 @@ namespace blqw.Data
 
         public System.Data.Common.DbParameter CreateDbParameter(object value)
         {
+            if (value == null)
+            {
+                return null;
+            }
             return new System.Data.SqlClient.SqlParameter() { Value = value };
         }
 

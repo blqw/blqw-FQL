@@ -9,14 +9,13 @@ namespace UnitTestProject1
 {
     static class CustomAssert
     {
-        public static void Assert(this FQLResult result, string sql)
+        public static void Assert(this IFQLResult result, string sql)
         {
             Microsoft.VisualStudio.TestTools.UnitTesting.Assert.AreEqual(sql, result.CommandText);
             Microsoft.VisualStudio.TestTools.UnitTesting.Assert.IsNotNull(result.DbParameters);
 
             foreach (var p in result.DbParameters)
             {
-                StringAssert.Contains(sql, "@" + p.ParameterName);
                 sql = sql.Replace("@" + p.ParameterName, "");
             }
 
@@ -64,7 +63,7 @@ namespace UnitTestProject1
             var p = new System.Data.SqlClient.SqlParameter("name", System.Data.SqlDbType.NVarChar);
 
 
-            FQLResult result;
+            IFQLResult result;
 
             result = FQL.Format("select * from users where  id = {0} and name = {1} and 1=1", i, s);
             result.Assert("select * from users where  id = @p0 and name = @p1 and 1=1");
@@ -74,8 +73,7 @@ namespace UnitTestProject1
             result = FQL.Format("select * from users where  id = {0} and name = {1}", i, p);
             result.Assert("select * from users where  id = @p0 and name = @name");
             Assert.AreEqual(i, result.DbParameters[0].Value);
-            Assert.AreNotEqual(p, result.DbParameters[1]);
-            Assert.AreEqual(p.Value, result.DbParameters[1].Value);
+            Assert.AreEqual(p, result.DbParameters[1]);
 
             result = FQL.Format(FQL.CurrentFQLProvider, "select * from users where  id = {0} and name = {1}", l, s);
             result.Assert("select * from users where  id = NULL and name = @p1");
@@ -175,8 +173,6 @@ namespace UnitTestProject1
             result = FQL.Format("select {0:name} = name from users where id = {0:id}", dict);
             result.Assert("select @name = name from users where id = @p0_id");
             result.DbParameters[0].Value = "blqw";
-            Assert.IsNull(((SqlParameter)dict["name"]).Value);
-            result.ImportOutParameter();
             Assert.AreEqual("blqw", ((SqlParameter)dict["name"]).Value);
 
             dict["name"] = new SqlParameter {
@@ -186,8 +182,6 @@ namespace UnitTestProject1
             result = FQL.Format("select {0:out name} = name from users where id = {0:id}", dict);
             result.Assert("select @name = name from users where id = @p0_id");
             result.DbParameters[0].Value = "blqw";
-            Assert.IsNull(((SqlParameter)dict["name"]).Value);
-            result.ImportOutParameter();
             Assert.AreEqual("blqw", ((SqlParameter)dict["name"]).Value);
         }
 
@@ -202,13 +196,18 @@ namespace UnitTestProject1
             var result = FQL.Format("select name from users where id = {0}", 1, p);
             result.Assert("select name from users where id = @p0");
             Assert.AreEqual(1, result.DbParameters[0].Value);
-            Assert.AreEqual(1, result.DbParameters.Length);
+            Assert.AreEqual(2, result.DbParameters.Length);
 
             //换位置
             result = FQL.Format("select name from users where id = {1}", p, 1);
             result.Assert("select name from users where id = @p1");
             Assert.AreEqual(1, result.DbParameters[0].Value);
-            Assert.AreEqual(1, result.DbParameters.Length);
+            Assert.AreEqual(2, result.DbParameters.Length);
+
+
+            result = FQL.Format("select name from users where id = {0} or id = {1}", p, 1);
+            result.Assert("select name from users where id = @name or id = @p1");
+            Assert.AreEqual(p, result.DbParameters[0]);
         }
 
         [TestMethod]
@@ -298,7 +297,7 @@ namespace UnitTestProject1
         [TestMethod]
         public void 一个参数使用多次()
         {
-            FQLResult result;
+            IFQLResult result;
 
             result = FQL.Format("select {0} + {1} from users where  id = {0} and name = {1}", 1, "blqw");
             result.Assert("select @p0 + @p1 from users where  id = @p0 and name = @p1");

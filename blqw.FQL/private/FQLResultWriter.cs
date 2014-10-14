@@ -6,33 +6,29 @@ using System.Threading;
 
 namespace blqw.Data
 {
-    public struct FQLConcat : IFQLConcat
+    struct FQLResultWriter : IFQLResultWriter
     {
-        /// <summary> 设置返回值的回调函数
-        /// </summary>
-        private ThreadStart _callback;
-        private IFQLProvider _provider;
-        private List<string> _commandTexts;
-        private List<DbParameter> _parameters;
-        private int _commandTextCount;
-        private int _parameterCount;
-        private int _argumentCount;
-        private string _firstConnector;
+        private ThreadStart _callback; //返回值的回调
+        private IFQLProvider _provider; //格式化机制
+        private List<string> _commandTexts; //sql语句集合
+        private List<DbParameter> _parameters; //参数集合
+        private int _commandTextsLimit; //sql语句数量限制
+        private int _parametersLimit; //参数数量限制
+        private int _argumentStart; //参数化名称的起始值
+        private string _firstConnector; //首次连接语句时使用的符号
         private bool _first;
-        private int _generations;
 
-        public FQLConcat(string firstConnector, IFQLProvider provider, string commandText, DbParameter[] parameters, ThreadStart callback, int argumentCount)
+        public FQLResultWriter(string firstConnector, IFQLProvider provider, string commandText, DbParameter[] parameters, ThreadStart callback, int argumentCount)
         {
-            _generations = 0;
             _first = true;
             _firstConnector = firstConnector;
             _provider = provider;
             _callback = callback;
             _commandTexts = new List<string> { commandText };
             _parameters = new List<DbParameter>(parameters);
-            _commandTextCount = 1;
-            _parameterCount = parameters.Length;
-            _argumentCount = argumentCount;
+            _commandTextsLimit = 1;
+            _parametersLimit = parameters.Length;
+            _argumentStart = argumentCount;
         }
 
         public void ImportOutParameter()
@@ -48,16 +44,16 @@ namespace blqw.Data
         {
             get
             {
-                if (_commandTextCount == 1)
+                if (_commandTextsLimit == 1)
                 {
                     return _commandTexts[0];
                 }
-                if (_commandTextCount == _commandTexts.Count)
+                if (_commandTextsLimit == _commandTexts.Count)
                 {
                     return string.Join(" ", _commandTexts.ToArray());
                 }
-                var strArr = new string[_commandTextCount];
-                _commandTexts.CopyTo(0, strArr, 0, _commandTextCount);
+                var strArr = new string[_commandTextsLimit];
+                _commandTexts.CopyTo(0, strArr, 0, _commandTextsLimit);
                 return string.Join(" ", strArr);
             }
         }
@@ -66,18 +62,24 @@ namespace blqw.Data
         {
             get
             {
-                if (_parameterCount == _parameters.Count)
+                if (_parametersLimit == _parameters.Count)
                 {
                     return _parameters.ToArray();
                 }
-                var arr = new DbParameter[_parameterCount];
-                _parameters.CopyTo(0, arr, 0, _parameterCount);
+                var arr = new DbParameter[_parametersLimit];
+                _parameters.CopyTo(0, arr, 0, _parametersLimit);
                 return arr;
             }
         }
 
-        public IFQLConcat AsConcat(string firstConnector)
+        public IFQLResultWriter AsWriter(string firstConnector)
         {
+            return new FQLResultWriter {
+                _callback = _callback,
+                _provider = _provider,
+                _commandTexts = new List<string>(_commandTexts),
+                _parameters = new List<DbParameter>(_parameters)
+            };
             var a = _first;
             var b = _firstConnector;
             try
@@ -93,15 +95,15 @@ namespace blqw.Data
             }
         }
 
-        string IFQLConcat.FirstConnector
+        string IFQLResultWriter.FirstConnector
         {
             get { return _firstConnector; }
         }
 
-        void IFQLConcat.Append(string connector, string sqlformat, params object[] args)
+        void IFQLResultWriter.Append(string connector, string sqlformat, params object[] args)
         {
-            var r = FQL.Format(_provider, _argumentCount, sqlformat, args);
-            _argumentCount += args.Length;
+            var r = (FQLResult)FQL.Format(_provider, _argumentStart, sqlformat, args);
+            _argumentStart += args.Length;
             if (_first)
             {
                 _first = false;
@@ -112,9 +114,9 @@ namespace blqw.Data
                 _commandTexts.Add(connector);
             }
             _commandTexts.Add(r.CommandText);
-            _commandTextCount += 2;
+            _commandTextsLimit += 2;
             _parameters.AddRange(r.DbParameters);
-            _parameterCount += r.DbParameters.Length;
+            _parametersLimit += r.DbParameters.Length;
             if (r._callback != null)
             {
                 _callback += r._callback;

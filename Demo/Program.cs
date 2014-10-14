@@ -58,12 +58,12 @@ namespace Demo
 
         static void SearchCountDemo2(string name, string type, string type_desc)
         {
-            var sql = FQL.Format("select @totle = count(1) from sys.objects").AsConcat("WHERE");
+            var sql = FQL.Format("select @totle = count(1) from sys.objects").AsWriter("WHERE");
 
             if (name != null) sql.Append("AND","name like '%' + {0} + '%'", name);
             if (type != null) sql.Append("AND", "type = {0}", type); ;
             if (type_desc != null) sql.Append("AND", "type_desc = {0}", type_desc);
-            sql = sql.AsConcat("ORDER BY");
+            sql = sql.AsWriter("ORDER BY");
             if (name != null) sql.Append(",", "name");
             if (type != null) sql.Append(",", "type"); ;
             if (type_desc != null) sql.Append(",", "type_desc");
