@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading;
 
-namespace blqw.Data
+namespace blqw
 {
     /// <summary> 格式化Sql字符串时的辅助对象
     /// </summary>

@@ -1,5 +1,4 @@
-﻿using blqw.Data;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,36 +51,8 @@ namespace Demo
             //}
 
             //OutDemo();
-            SearchCountDemo2("a", "S", null);
-            //SearchCountDemo("a", "S", null);
+            SearchCountDemo("a", "S", null);
         }
-
-        static void SearchCountDemo2(string name, string type, string type_desc)
-        {
-            var sql = FQL.Format("select @totle = count(1) from sys.objects").AsWriter("WHERE");
-
-            if (name != null) sql.Append("AND","name like '%' + {0} + '%'", name);
-            if (type != null) sql.Append("AND", "type = {0}", type); ;
-            if (type_desc != null) sql.Append("AND", "type_desc = {0}", type_desc);
-            sql = sql.AsWriter("ORDER BY");
-            if (name != null) sql.Append(",", "name");
-            if (type != null) sql.Append(",", "type"); ;
-            if (type_desc != null) sql.Append(",", "type_desc");
-
-            using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
-            using (var cmd = conn.CreateCommand())
-            {
-                cmd.CommandText = sql.CommandText;                  //设置CommandText
-                cmd.Parameters.AddRange(sql.DbParameters);          //设定Parameters
-                var p = new SqlParameter("totle", 0) { Direction = ParameterDirection.Output };
-                cmd.Parameters.Add(p);
-                conn.Open();
-                cmd.ExecuteNonQuery();
-                Console.WriteLine(p.Value);
-            }
-
-        }
-
 
         static void OutDemo()
         {
@@ -103,18 +74,20 @@ namespace Demo
 
         static void SearchCountDemo(string name, string type, string type_desc)
         {
-            var where = new Where();
-            if (name != null) where.And("name like '%' + {0} + '%'", name);
-            if (type != null) where.And("type = {0}", type); ;
-            if (type_desc != null) where.And("type_desc = {0}", type_desc);
-
-            string sql = "select @totle = count(1) from sys.objects";
+            var sql = FQL.Format("select @totle = count(1) from sys.objects").AsWriter();
+            if (name != null) sql.And("name like '%' + {0} + '%'", name);
+            if (type != null) sql.And("type = {0}", type); ;
+            if (type_desc != null) sql.And("type_desc = {0}", type_desc);
+            sql = sql.AsWriter("ORDER BY");
+            if (name != null) sql.Append(",", "name");
+            if (type != null) sql.Append(",", "type"); ;
+            if (type_desc != null) sql.Append(",", "type_desc");
 
             using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
             using (var cmd = conn.CreateCommand())
             {
-                cmd.CommandText = sql + where.ToSql(" where");      //设置CommandText
-                cmd.Parameters.AddRange(where.Parameters);          //设定Parameters
+                cmd.CommandText = sql.CommandText;                  //设置CommandText
+                cmd.Parameters.AddRange(sql.DbParameters);          //设定Parameters
                 var p = new SqlParameter("totle", 0) { Direction = ParameterDirection.Output };
                 cmd.Parameters.Add(p);
                 conn.Open();

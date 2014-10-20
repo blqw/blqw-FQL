@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Text;
 using System.Threading;
 
-namespace blqw.Data
+namespace blqw
 {
     /// <summary> FQL.Format 方法的返回值
     /// </summary>
@@ -33,6 +33,7 @@ namespace blqw.Data
             _callback = callback;
             _argumentCount = argumentCount;
         }
+
         /// <summary> 导入返回参数
         /// </summary>
         public void ImportOutParameter()
@@ -43,12 +44,17 @@ namespace blqw.Data
                 callback();
             }
         }
-        /// <summary> 将结果转为可写模式
-        /// </summary>
+
+        public IFQLResultWriter AsWriter()
+        {
+            return new FQLResultWriter(null, _provider, CommandText, DbParameters, _callback, _argumentCount);
+        }
+
         public IFQLResultWriter AsWriter(string firstConnector)
         {
             return new FQLResultWriter(firstConnector, _provider, CommandText, DbParameters, _callback, _argumentCount);
         }
+
         /// <summary> sql指令文本
         /// </summary>
         string IFQLResult.CommandText

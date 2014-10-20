@@ -7,8 +7,8 @@
     <ProjectGuid>{ABC4D305-171D-434F-9EB8-419D63C1341C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>blqw.Data</RootNamespace>
-    <AssemblyName>blqw.Data</AssemblyName>
+    <RootNamespace>blqw</RootNamespace>
+    <AssemblyName>blqw.FQL</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />

@@ -6,7 +6,7 @@ using System.Data.Common;
 using System.Text;
 using System.Threading;
 
-namespace blqw.Data
+namespace blqw
 {
     /// <summary> 用于格式化sql字符串的静态类
     /// </summary>

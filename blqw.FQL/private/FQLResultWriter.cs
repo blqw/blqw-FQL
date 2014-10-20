@@ -4,7 +4,7 @@ using System.Data.Common;
 using System.Text;
 using System.Threading;
 
-namespace blqw.Data
+namespace blqw
 {
     struct FQLResultWriter : IFQLResultWriter
     {
@@ -72,35 +72,12 @@ namespace blqw.Data
             }
         }
 
-        public IFQLResultWriter AsWriter(string firstConnector)
-        {
-            return new FQLResultWriter {
-                _callback = _callback,
-                _provider = _provider,
-                _commandTexts = new List<string>(_commandTexts),
-                _parameters = new List<DbParameter>(_parameters)
-            };
-            var a = _first;
-            var b = _firstConnector;
-            try
-            {
-                _first = true;
-                _firstConnector = firstConnector;
-                return this;
-            }
-            finally
-            {
-                _first = a;
-                _firstConnector = b;
-            }
-        }
-
-        string IFQLResultWriter.FirstConnector
+        public string FirstConnector
         {
             get { return _firstConnector; }
         }
 
-        void IFQLResultWriter.Append(string connector, string sqlformat, params object[] args)
+        public void Append(string connector, string sqlformat, params object[] args)
         {
             var r = (FQLResult)FQL.Format(_provider, _argumentStart, sqlformat, args);
             _argumentStart += args.Length;
@@ -123,5 +100,58 @@ namespace blqw.Data
             }
         }
 
+        void IFQLResultWriter.And(string sqlformat, params object[] args)
+        {
+            if (_first && _firstConnector == null)
+            {
+                _first = false;
+                Append("WHERE", sqlformat, args);
+            }
+            else
+            {
+                Append("AND", sqlformat, args);
+            }
+        }
+
+        void IFQLResultWriter.Or(string sqlformat, params object[] args)
+        {
+            if (_first && _firstConnector == null)
+            {
+                _first = false;
+                Append("WHERE", sqlformat, args);
+            }
+            else
+            {
+                Append("OR", sqlformat, args);
+            }
+        }
+
+        void IFQLResultWriter.Comma(string sqlformat, params object[] args)
+        {
+            Append(",", sqlformat, args);
+        }
+
+        public IFQLResultWriter AsWriter()
+        {
+            return new FQLResultWriter {
+                _callback = _callback,
+                _provider = _provider,
+                _commandTextsLimit = 1,
+                _commandTexts = new List<string>(_commandTexts),
+                _parameters = new List<DbParameter>(_parameters)
+            };
+        }
+
+        public IFQLResultWriter AsWriter(string firstConnector)
+        {
+            return new FQLResultWriter {
+                _callback = _callback,
+                _provider = _provider,
+                _commandTextsLimit = 1,
+                _firstConnector = firstConnector,
+                _commandTexts = new List<string>(_commandTexts),
+                _parameters = new List<DbParameter>(_parameters)
+            };
+        }
     }
 }

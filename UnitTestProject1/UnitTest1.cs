@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using blqw.Data;
 using System.Collections.Generic;
 using System.Collections;
 using System.Data.SqlClient;
+using blqw;
 
 namespace UnitTestProject1
 {

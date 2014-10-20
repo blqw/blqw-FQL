@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.Common;
 using System.Text;
 
-namespace blqw.Data
+namespace blqw
 {
     /// <summary> 提供用于检索控制格式化Sql语句的对象的机制
     /// </summary>

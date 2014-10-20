@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Data.Common;
-namespace blqw.Data
+namespace blqw
 {
     /// <summary> FQL.Format 方法的返回值定义
     /// </summary>
@@ -15,9 +15,13 @@ namespace blqw.Data
         /// <summary> sql指令参数
         /// </summary>
         DbParameter[] DbParameters { get; }
+        /// <summary> 将结果转为sql连接模式
+        /// </summary>
+        IFQLResultWriter AsWriter();
 
         /// <summary> 将结果转为sql连接模式
         /// </summary>
         IFQLResultWriter AsWriter(string firstConnector);
+
     }
 }

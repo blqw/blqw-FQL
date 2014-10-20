@@ -46,7 +46,6 @@
     <Compile Include="CodeTimer.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Where.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\blqw.FQL\blqw.FQL.csproj">
