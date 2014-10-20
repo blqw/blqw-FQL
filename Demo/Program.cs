@@ -13,7 +13,7 @@ namespace Demo
     {
         static void Main(string[] args)
         {
-            //CodeTimer.Initialize();
+            CodeTimer.Initialize();
 
             //CodeTimer.Time("a", 4, () => {
             //    using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
@@ -51,7 +51,7 @@ namespace Demo
             //}
 
             //OutDemo();
-            SearchCountDemo("a", "S", null);
+            //SearchCountDemo2("a", "S", null);
         }
 
         static void OutDemo()
@@ -78,10 +78,6 @@ namespace Demo
             if (name != null) sql.And("name like '%' + {0} + '%'", name);
             if (type != null) sql.And("type = {0}", type); ;
             if (type_desc != null) sql.And("type_desc = {0}", type_desc);
-            sql = sql.AsWriter("ORDER BY");
-            if (name != null) sql.Append(",", "name");
-            if (type != null) sql.Append(",", "type"); ;
-            if (type_desc != null) sql.Append(",", "type_desc");
 
             using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
             using (var cmd = conn.CreateCommand())
@@ -94,7 +90,26 @@ namespace Demo
                 cmd.ExecuteNonQuery();
                 Console.WriteLine(p.Value);
             }
+        }
 
+        static void SearchCountDemo2(string name, string type, string type_desc)
+        {
+            var p = new { totle = 0 };
+            var sql = FQL.Format("select {0:out totle} = count(1) from sys.objects", p).AsWriter();
+            if (name != null) sql.And("name like '%' + {0} + '%'", name);
+            if (type != null) sql.And("type = {0}", type); ;
+            if (type_desc != null) sql.And("type_desc = {0}", type_desc);
+
+            using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
+            using (var cmd = conn.CreateCommand())
+            {
+                cmd.CommandText = sql.CommandText;                  //设置CommandText
+                cmd.Parameters.AddRange(sql.DbParameters);          //设定Parameters
+                conn.Open();
+                cmd.ExecuteNonQuery();
+                sql.ImportOutParameter();
+                Console.WriteLine(p.totle);
+            }
         }
 
         static int ExecuteNonQuery(string sql, object[] args)

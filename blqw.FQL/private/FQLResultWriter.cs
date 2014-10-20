@@ -136,9 +136,12 @@ namespace blqw
             return new FQLResultWriter {
                 _callback = _callback,
                 _provider = _provider,
-                _commandTextsLimit = 1,
                 _commandTexts = new List<string>(_commandTexts),
-                _parameters = new List<DbParameter>(_parameters)
+                _parameters = new List<DbParameter>(_parameters),
+                _commandTextsLimit = _commandTextsLimit,
+                _parametersLimit = _parametersLimit,
+                _argumentStart = _argumentStart,
+                _first = true,
             };
         }
 
@@ -147,10 +150,13 @@ namespace blqw
             return new FQLResultWriter {
                 _callback = _callback,
                 _provider = _provider,
-                _commandTextsLimit = 1,
-                _firstConnector = firstConnector,
                 _commandTexts = new List<string>(_commandTexts),
-                _parameters = new List<DbParameter>(_parameters)
+                _parameters = new List<DbParameter>(_parameters),
+                _commandTextsLimit = _commandTextsLimit,
+                _parametersLimit = _parametersLimit,
+                _argumentStart = _argumentStart,
+                _firstConnector = firstConnector,
+                _first = true,
             };
         }
     }
