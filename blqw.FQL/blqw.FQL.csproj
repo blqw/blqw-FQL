@@ -38,16 +38,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="core\Literacy\AttributeCollection.cs" />
-    <Compile Include="core\Literacy\Convert2.cs" />
-    <Compile Include="core\Literacy\Delegate.cs" />
-    <Compile Include="core\Literacy\ILoadMember.cs" />
-    <Compile Include="core\Literacy\Literacy.cs" />
-    <Compile Include="core\Literacy\ObjectProperty.cs" />
-    <Compile Include="core\Literacy\ObjectPropertyCollection.cs" />
-    <Compile Include="core\Literacy\TypeCodes.cs" />
-    <Compile Include="core\Literacy\TypeInfo.cs" />
-    <Compile Include="core\Literacy\TypesHelper.cs" />
     <Compile Include="FQL.cs" />
     <Compile Include="private\FQLCommand.cs" />
     <Compile Include="private\FQLResultWriter.cs" />
@@ -57,6 +47,12 @@
     <Compile Include="interface\IFQLResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="providers\SqlServerFQL.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\blqw.Literacy\Literacy\Literacy\blqw.Literacy.csproj">
+      <Project>{d0c3b619-180a-407b-be4a-9c1864b2a06d}</Project>
+      <Name>blqw.Literacy</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
