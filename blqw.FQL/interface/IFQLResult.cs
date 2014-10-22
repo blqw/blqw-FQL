@@ -17,11 +17,11 @@ namespace blqw
         DbParameter[] DbParameters { get; }
         /// <summary> 将结果转为sql连接模式
         /// </summary>
-        IFQLResultWriter AsWriter();
+        IFQLBuilder AsBuilder();
 
         /// <summary> 将结果转为sql连接模式
         /// </summary>
-        IFQLResultWriter AsWriter(string firstConnector);
+        IFQLBuilder AsBuilder(string firstConnector);
 
     }
 }

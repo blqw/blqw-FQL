@@ -39,7 +39,7 @@ namespace Demo
 
             //var keyword = "sys";
             ////var r = FQL.Format(FQL.SqlServer, sql, "sys"); //也可以在方法中设定格式化机制
-            //var r = FQL.Format("select count(1) from sys.objects where name like '%' + {0} + '%'", keyword);
+            //var r = FQL.Format(SqlServerFQL.Instance,"select count(1) from sys.objects where name like '%' + {0} + '%'", keyword);
 
             //using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
             //using (var cmd = conn.CreateCommand())
@@ -58,7 +58,7 @@ namespace Demo
         {
             string sql = "select {0:out count} = count(1) from sys.objects where name like '%' + {0:name} + '%'";
             var arg = new { name = "sys", count = 0 };
-            var r = FQL.Format(sql, arg);
+            var r = FQL.Format(SqlServerFQL.Instance, sql, arg);
 
             using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
             using (var cmd = conn.CreateCommand())
@@ -74,7 +74,7 @@ namespace Demo
 
         static void SearchCountDemo(string name, string type, string type_desc)
         {
-            var sql = FQL.Format("select @totle = count(1) from sys.objects").AsWriter();
+            var sql = FQL.Format(SqlServerFQL.Instance, "select @totle = count(1) from sys.objects").AsBuilder();
             if (name != null) sql.And("name like '%' + {0} + '%'", name);
             if (type != null) sql.And("type = {0}", type); ;
             if (type_desc != null) sql.And("type_desc = {0}", type_desc);
@@ -95,7 +95,7 @@ namespace Demo
         static void SearchCountDemo2(string name, string type, string type_desc)
         {
             var p = new { totle = 0 };
-            var sql = FQL.Format("select {0:out totle} = count(1) from sys.objects", p).AsWriter();
+            var sql = FQL.Format(SqlServerFQL.Instance, "select {0:out totle} = count(1) from sys.objects", p).AsBuilder();
             if (name != null) sql.And("name like '%' + {0} + '%'", name);
             if (type != null) sql.And("type = {0}", type); ;
             if (type_desc != null) sql.And("type_desc = {0}", type_desc);
@@ -114,7 +114,7 @@ namespace Demo
 
         static int ExecuteNonQuery(string sql, object[] args)
         {
-            var fql = FQL.Format(sql, args);
+            var fql = FQL.Format(SqlServerFQL.Instance, sql, args);
             using (var conn = new SqlConnection("Data Source=.;Initial Catalog=Test;Integrated Security=True"))
             using (var cmd = conn.CreateCommand())
             {

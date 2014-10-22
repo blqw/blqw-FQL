@@ -45,14 +45,14 @@ namespace blqw
             }
         }
 
-        public IFQLResultWriter AsWriter()
+        public IFQLBuilder AsBuilder()
         {
-            return new FQLResultWriter(null, _provider, CommandText, DbParameters, _callback, _argumentCount);
+            return new FQLBuilder(null, _provider, CommandText, DbParameters, _callback, _argumentCount);
         }
 
-        public IFQLResultWriter AsWriter(string firstConnector)
+        public IFQLBuilder AsBuilder(string firstConnector)
         {
-            return new FQLResultWriter(firstConnector, _provider, CommandText, DbParameters, _callback, _argumentCount);
+            return new FQLBuilder(firstConnector, _provider, CommandText, DbParameters, _callback, _argumentCount);
         }
 
         /// <summary> sql指令文本

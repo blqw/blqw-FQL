@@ -6,7 +6,7 @@ namespace blqw
 {
     /// <summary> 返回值可写模式
     /// </summary>
-    public interface IFQLResultWriter : IFQLResult
+    public interface IFQLBuilder : IFQLResult
     {
         /// <summary> 第一次连接语句时使用的符号
         /// </summary>

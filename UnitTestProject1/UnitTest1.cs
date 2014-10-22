@@ -65,20 +65,20 @@ namespace UnitTestProject1
 
             IFQLResult result;
 
-            result = FQL.Format("select * from users where  id = {0} and name = {1} and 1=1", i, s);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id = {0} and name = {1} and 1=1", i, s);
             result.Assert("select * from users where  id = @p0 and name = @p1 and 1=1");
             Assert.AreEqual(i, result.DbParameters[0].Value);
             Assert.AreEqual(s, result.DbParameters[1].Value);
 
-            result = FQL.Format("select * from users where  id = {0} and name = {1}", i, p);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id = {0} and name = {1}", i, p);
             result.Assert("select * from users where  id = @p0 and name = @name");
             Assert.AreEqual(i, result.DbParameters[0].Value);
             Assert.AreEqual(p, result.DbParameters[1]);
 
-            result = FQL.Format(FQL.CurrentFQLProvider, "select * from users where  id = {0} and name = {1}", l, s);
+            result = FQL.Format(SqlServerFQL.Instance, "select * from users where  id = {0} and name = {1}", l, s);
             result.Assert("select * from users where  id = NULL and name = @p1");
             Assert.AreEqual(s, result.DbParameters[0].Value);
-            result = FQL.Format("select * from users where  id in ({0}) and name = {1}", arr, s);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id in ({0}) and name = {1}", arr, s);
             result.Assert("select * from users where  id in (@p0_1,@p0_2,@p0_3,@p0_4,@p0_5) and name = @p1");
             Assert.AreEqual(arr[0], result.DbParameters[0].Value);
             Assert.AreEqual(arr[1], result.DbParameters[1].Value);
@@ -86,7 +86,7 @@ namespace UnitTestProject1
             Assert.AreEqual(arr[3], result.DbParameters[3].Value);
             Assert.AreEqual(arr[4], result.DbParameters[4].Value);
             Assert.AreEqual(s, result.DbParameters[5].Value);
-            result = FQL.Format("select * from users where  id in ({0},{1:id}) and name = {1:name}", list, obj);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id in ({0},{1:id}) and name = {1:name}", list, obj);
             result.Assert("select * from users where  id in (@p0_1,@p0_2,@p0_3,@p0_4,@p0_5,@p1_id) and name = @p1_name");
             Assert.AreEqual(list[0], result.DbParameters[0].Value);
             Assert.AreEqual(list[1], result.DbParameters[1].Value);
@@ -96,25 +96,25 @@ namespace UnitTestProject1
             Assert.AreEqual(obj.id, result.DbParameters[5].Value);
             Assert.AreEqual(obj.name, result.DbParameters[6].Value);
 
-            result = FQL.Format("select * from users where  id = {0:id} and name = {0:name}", obj);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id = {0:id} and name = {0:name}", obj);
             result.Assert("select * from users where  id = @p0_id and name = @p0_name");
             Assert.AreEqual(obj.id, result.DbParameters[0].Value);
             Assert.AreEqual(obj.name, result.DbParameters[1].Value);
-            result = FQL.Format("select * from users where  id = {0:id} and name = {0:name}", dict);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id = {0:id} and name = {0:name}", dict);
             result.Assert("select * from users where  id = @p0_id and name = @p0_name");
             Assert.AreEqual(dict["id"], result.DbParameters[0].Value);
             Assert.AreEqual(dict["name"], result.DbParameters[1].Value);
-            result = FQL.Format("select * from users where  id = {0:id} and name = {0:name}", user1);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id = {0:id} and name = {0:name}", user1);
             result.Assert("select * from users where  id = @p0_id and name = @p0_name");
             Assert.AreEqual(user1.ID, result.DbParameters[0].Value);
             Assert.AreEqual(user1.Name, result.DbParameters[1].Value);
-            result = FQL.Format("select * from users where  id = {0:id} and name = {0:name}", user2);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where  id = {0:id} and name = {0:name}", user2);
             result.Assert("select * from users where  id = @p0_id and name = @p0_name");
             Assert.AreEqual(user2.ID, result.DbParameters[0].Value);
             Assert.AreEqual(user2.Name, result.DbParameters[1].Value);
 
 
-            result = FQL.Format("select * from users where id in ({0:ids},{0:id},{1}) and name = {0:name}", obj, 1);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where id in ({0:ids},{0:id},{1}) and name = {0:name}", obj, 1);
             result.Assert("select * from users where id in (@p0_ids_1,@p0_ids_2,@p0_ids_3,@p0_ids_4,@p0_ids_5,@p0_id,@p1) and name = @p0_name");
             Assert.AreEqual(obj.IDs[0], result.DbParameters[0].Value);
             Assert.AreEqual(obj.IDs[1], result.DbParameters[1].Value);
@@ -132,13 +132,13 @@ namespace UnitTestProject1
         public void 匿名类型_返回参数()
         {
             var obj = new { id = 1 };
-            var result = FQL.Format("select * from users where id = {0:out id}", obj);
+            var result = FQL.Format(SqlServerFQL.Instance,"select * from users where id = {0:out id}", obj);
             result.Assert("select * from users where id = @p0_id");
             Assert.IsNull(result.DbParameters[0].Value);
             result.DbParameters[0].Value = 10;
             result.ImportOutParameter();
             Assert.AreEqual(10, obj.id);
-            result = FQL.Format("select * from users where id = {0:ref id}", obj);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where id = {0:ref id}", obj);
             result.Assert("select * from users where id = @p0_id");
             Assert.AreEqual(10, result.DbParameters[0].Value);
             result.DbParameters[0].Value = 100;
@@ -152,14 +152,14 @@ namespace UnitTestProject1
             var dict = new Dictionary<string, object>();
             dict.Add("id", 1);
             dict.Add("name", "");
-            var result = FQL.Format("select {0:out name} = name from users where id = {0:id}", dict);
+            var result = FQL.Format(SqlServerFQL.Instance,"select {0:out name} = name from users where id = {0:id}", dict);
             result.Assert("select @p0_name = name from users where id = @p0_id");
             result.DbParameters[0].Value = "blqw";
             result.ImportOutParameter();
             Assert.AreEqual("blqw", dict["name"]);
 
             dict["name"] = typeof(string);
-            result = FQL.Format("select {0:out name} = name from users where id = {0:id}", dict);
+            result = FQL.Format(SqlServerFQL.Instance,"select {0:out name} = name from users where id = {0:id}", dict);
             result.Assert("select @p0_name = name from users where id = @p0_id");
             result.DbParameters[0].Value = "blqw";
             result.ImportOutParameter();
@@ -170,7 +170,7 @@ namespace UnitTestProject1
                 SqlDbType = System.Data.SqlDbType.NVarChar,
                 Direction = System.Data.ParameterDirection.Output,
             };
-            result = FQL.Format("select {0:name} = name from users where id = {0:id}", dict);
+            result = FQL.Format(SqlServerFQL.Instance,"select {0:name} = name from users where id = {0:id}", dict);
             result.Assert("select @name = name from users where id = @p0_id");
             result.DbParameters[0].Value = "blqw";
             Assert.AreEqual("blqw", ((SqlParameter)dict["name"]).Value);
@@ -179,7 +179,7 @@ namespace UnitTestProject1
                 ParameterName = "name",
                 SqlDbType = System.Data.SqlDbType.NVarChar
             };
-            result = FQL.Format("select {0:out name} = name from users where id = {0:id}", dict);
+            result = FQL.Format(SqlServerFQL.Instance,"select {0:out name} = name from users where id = {0:id}", dict);
             result.Assert("select @name = name from users where id = @p0_id");
             result.DbParameters[0].Value = "blqw";
             Assert.AreEqual("blqw", ((SqlParameter)dict["name"]).Value);
@@ -193,19 +193,19 @@ namespace UnitTestProject1
                 SqlDbType = System.Data.SqlDbType.NVarChar,
                 Direction = System.Data.ParameterDirection.Output,
             };
-            var result = FQL.Format("select name from users where id = {0}", 1, p);
+            var result = FQL.Format(SqlServerFQL.Instance,"select name from users where id = {0}", 1, p);
             result.Assert("select name from users where id = @p0");
             Assert.AreEqual(1, result.DbParameters[0].Value);
             Assert.AreEqual(2, result.DbParameters.Length);
 
             //换位置
-            result = FQL.Format("select name from users where id = {1}", p, 1);
+            result = FQL.Format(SqlServerFQL.Instance,"select name from users where id = {1}", p, 1);
             result.Assert("select name from users where id = @p1");
             Assert.AreEqual(1, result.DbParameters[0].Value);
             Assert.AreEqual(2, result.DbParameters.Length);
 
 
-            result = FQL.Format("select name from users where id = {0} or id = {1}", p, 1);
+            result = FQL.Format(SqlServerFQL.Instance,"select name from users where id = {0} or id = {1}", p, 1);
             result.Assert("select name from users where id = @name or id = @p1");
             Assert.AreEqual(p, result.DbParameters[0]);
         }
@@ -215,7 +215,7 @@ namespace UnitTestProject1
         {
             try
             {
-                FQL.Format(null, 1);
+                FQL.Format(SqlServerFQL.Instance,null, 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -223,7 +223,7 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("{1}", 1);
+                FQL.Format(SqlServerFQL.Instance,"{1}", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -231,7 +231,7 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("{x}", 1);
+                FQL.Format(SqlServerFQL.Instance,"{x}", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -239,7 +239,7 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("..{.", 1);
+                FQL.Format(SqlServerFQL.Instance,"..{.", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -247,7 +247,7 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("..{0:{}.", 1);
+                FQL.Format(SqlServerFQL.Instance,"..{0:{}.", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -255,7 +255,7 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("..{0::}.", 1);
+                FQL.Format(SqlServerFQL.Instance,"..{0::}.", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -263,7 +263,7 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("...{x:...", 1);
+                FQL.Format(SqlServerFQL.Instance,"...{x:...", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -271,7 +271,7 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("...{0:name}:...", 1);
+                FQL.Format(SqlServerFQL.Instance,"...{0:name}:...", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
@@ -279,18 +279,18 @@ namespace UnitTestProject1
 
             try
             {
-                FQL.Format("...{0:name}:...", 1);
+                FQL.Format(SqlServerFQL.Instance,"...{0:name}:...", 1);
                 Assert.Fail("测试失败");
             }
             catch (AssertFailedException) { throw; }
             catch { }
 
-            FQL.Format("..{{.", 1);
-            FQL.Format("..}}.", 1);
-            FQL.Format("..{0:}.", 1);
-            FQL.Format("..}.", 1);
-            FQL.Format("..", 1);
-            FQL.Format("....", null);
+            FQL.Format(SqlServerFQL.Instance,"..{{.", 1);
+            FQL.Format(SqlServerFQL.Instance,"..}}.", 1);
+            FQL.Format(SqlServerFQL.Instance,"..{0:}.", 1);
+            FQL.Format(SqlServerFQL.Instance,"..}.", 1);
+            FQL.Format(SqlServerFQL.Instance,"..", 1);
+            FQL.Format(SqlServerFQL.Instance,"....", null);
             FQL.Format(null, "{0}", 1);
         }
 
@@ -299,13 +299,13 @@ namespace UnitTestProject1
         {
             IFQLResult result;
 
-            result = FQL.Format("select {0} + {1} from users where  id = {0} and name = {1}", 1, "blqw");
+            result = FQL.Format(SqlServerFQL.Instance,"select {0} + {1} from users where  id = {0} and name = {1}", 1, "blqw");
             result.Assert("select @p0 + @p1 from users where  id = @p0 and name = @p1");
             Assert.AreEqual(1, result.DbParameters[0].Value);
             Assert.AreEqual("blqw", result.DbParameters[1].Value);
 
 
-            result = FQL.Format(@"select * from users where id in ({0});
+            result = FQL.Format(SqlServerFQL.Instance, @"select * from users where id in ({0});
 select * from roles where user_id in ({0});", new[] { 1, 2, 3, 4, 5 });
             result.Assert(@"select * from users where id in (@p0_1,@p0_2,@p0_3,@p0_4,@p0_5);
 select * from roles where user_id in (@p0_1,@p0_2,@p0_3,@p0_4,@p0_5);");
@@ -321,13 +321,13 @@ select * from roles where user_id in (@p0_1,@p0_2,@p0_3,@p0_4,@p0_5);");
         public void 一般实体_返回参数()
         {
             var obj = new User { ID = 1 };
-            var result = FQL.Format("select * from users where id = {0:out id}", obj);
+            var result = FQL.Format(SqlServerFQL.Instance,"select * from users where id = {0:out id}", obj);
             result.Assert("select * from users where id = @p0_id");
             Assert.IsNull(result.DbParameters[0].Value);
             result.DbParameters[0].Value = 10;
             result.ImportOutParameter();
             Assert.AreEqual(10, obj.ID);
-            result = FQL.Format("select * from users where id = {0:ref id}", obj);
+            result = FQL.Format(SqlServerFQL.Instance,"select * from users where id = {0:ref id}", obj);
             result.Assert("select * from users where id = @p0_id");
             Assert.AreEqual(10, result.DbParameters[0].Value);
             result.DbParameters[0].Value = 100;
@@ -341,7 +341,7 @@ select * from roles where user_id in (@p0_1,@p0_2,@p0_3,@p0_4,@p0_5);");
             var obj = new User2 { ID = 1 };
             try
             {
-                var result = FQL.Format("select * from users where id = {0:out id}", obj);
+                var result = FQL.Format(SqlServerFQL.Instance,"select * from users where id = {0:out id}", obj);
                 Assert.Fail("测试失败");
             }
             catch (Exception)

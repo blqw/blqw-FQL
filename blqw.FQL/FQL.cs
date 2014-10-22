@@ -12,25 +12,17 @@ namespace blqw
     /// </summary>
     public static class FQL
     {
-        static FQL()
+        
+        public static IFQLBuilder CreateBuilder(IFQLProvider provider)
         {
-            CurrentFQLProvider = SqlServer = new SqlServerFQL();
+            return new FQLBuilder(null, provider, null, null, null, 0);
         }
 
-        readonly static IFQLProvider SqlServer;
-
-        /// <summary> 设置或获取当前使用的格式化的机制,默认为MsSql
-        /// </summary>
-        public static IFQLProvider CurrentFQLProvider;
-
-        /// <summary> 使用 FQL.CurrentFQLProvider 作为格式化机制,格式sql语句
-        /// </summary>
-        /// <param name="sql">待格式化的sql语句</param>
-        /// <param name="args">包含零个或多个Sql参数</param>
-        public static IFQLResult Format(string sql, params object[] args)
+        public static IFQLBuilder CreateBuilder(IFQLProvider provider, string firstConnector)
         {
-            return Format(CurrentFQLProvider, 0, sql, args);
+            return new FQLBuilder(firstConnector, provider, null, null, null, 0);
         }
+
 
         /// <summary> 使用 指定的IFQLProvider 作为格式化机制,格式sql语句
         /// </summary>
@@ -56,7 +48,7 @@ namespace blqw
             }
             if (provider == null)
             {
-                provider = CurrentFQLProvider;
+                throw new ArgumentNullException("provider");
             }
             var sqlLength = sql.Length;
             if (sqlLength < 3 || args == null || args.Length == 0)

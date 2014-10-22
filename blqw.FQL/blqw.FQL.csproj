@@ -40,9 +40,9 @@
   <ItemGroup>
     <Compile Include="FQL.cs" />
     <Compile Include="private\FQLCommand.cs" />
-    <Compile Include="private\FQLResultWriter.cs" />
+    <Compile Include="private\FQLBuilder.cs" />
     <Compile Include="private\FQLResult.cs" />
-    <Compile Include="interface\IFQLResultWriter.cs" />
+    <Compile Include="interface\IFQLBuilder.cs" />
     <Compile Include="interface\IFQLProvider.cs" />
     <Compile Include="interface\IFQLResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace blqw
 {
-    struct FQLResultWriter : IFQLResultWriter
+    struct FQLBuilder : IFQLBuilder
     {
         private ThreadStart _callback; //返回值的回调
         private IFQLProvider _provider; //格式化机制
@@ -18,16 +18,32 @@ namespace blqw
         private string _firstConnector; //首次连接语句时使用的符号
         private bool _first;
 
-        public FQLResultWriter(string firstConnector, IFQLProvider provider, string commandText, DbParameter[] parameters, ThreadStart callback, int argumentCount)
+        public FQLBuilder(string firstConnector, IFQLProvider provider, string commandText, DbParameter[] parameters, ThreadStart callback, int argumentCount)
         {
             _first = true;
             _firstConnector = firstConnector;
             _provider = provider;
             _callback = callback;
-            _commandTexts = new List<string> { commandText };
-            _parameters = new List<DbParameter>(parameters);
-            _commandTextsLimit = 1;
-            _parametersLimit = parameters.Length;
+            _commandTexts = new List<string>();
+            if (commandText != null)
+            {
+                _commandTexts.Add(commandText);
+                _commandTextsLimit = 1;
+            }
+            else
+            {
+                _commandTextsLimit = 0;
+            }
+            _parameters = new List<DbParameter>();
+            if (parameters != null)
+            {
+                _parameters.AddRange(parameters);
+                _parametersLimit = parameters.Length;
+            }
+            else
+            {
+                _parametersLimit = 0;
+            }
             _argumentStart = argumentCount;
         }
 
@@ -100,7 +116,7 @@ namespace blqw
             }
         }
 
-        void IFQLResultWriter.And(string sqlformat, params object[] args)
+        void IFQLBuilder.And(string sqlformat, params object[] args)
         {
             if (_first && _firstConnector == null)
             {
@@ -113,7 +129,7 @@ namespace blqw
             }
         }
 
-        void IFQLResultWriter.Or(string sqlformat, params object[] args)
+        void IFQLBuilder.Or(string sqlformat, params object[] args)
         {
             if (_first && _firstConnector == null)
             {
@@ -126,14 +142,14 @@ namespace blqw
             }
         }
 
-        void IFQLResultWriter.Comma(string sqlformat, params object[] args)
+        void IFQLBuilder.Comma(string sqlformat, params object[] args)
         {
             Append(",", sqlformat, args);
         }
 
-        public IFQLResultWriter AsWriter()
+        public IFQLBuilder AsBuilder()
         {
-            return new FQLResultWriter {
+            return new FQLBuilder {
                 _callback = _callback,
                 _provider = _provider,
                 _commandTexts = new List<string>(_commandTexts),
@@ -145,9 +161,9 @@ namespace blqw
             };
         }
 
-        public IFQLResultWriter AsWriter(string firstConnector)
+        public IFQLBuilder AsBuilder(string firstConnector)
         {
-            return new FQLResultWriter {
+            return new FQLBuilder {
                 _callback = _callback,
                 _provider = _provider,
                 _commandTexts = new List<string>(_commandTexts),
