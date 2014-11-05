@@ -53,7 +53,7 @@ namespace blqw
             var sqlLength = sql.Length;
             if (sqlLength < 3 || args == null || args.Length == 0)
             {
-                return new FQLResult(provider, sql, new DbParameter[0], null, 0);
+                return new FQLResult(provider, sql, null, null, 0);
             }
             var argsCount = args.Length;
             var command = new FQLCommand() {

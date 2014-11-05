@@ -4,7 +4,7 @@ using System.Text;
 
 namespace blqw
 {
-    /// <summary> 返回值可写模式
+    /// <summary> 返回值Sql构造器
     /// </summary>
     public interface IFQLBuilder : IFQLResult
     {
@@ -28,10 +28,14 @@ namespace blqw
         /// <param name="sqlformat">需要格式化的sql语句</param>
         /// <param name="args">sql参数</param>
         void Or(string sqlformat, params object[] args);
-        /// <summary> 使用逗号连接sql,如果是第一次,则使用 WHERE 作为连接符号,否则使用 OR
+        /// <summary> 连接新的sql语句,如果是第一次,则使用 FirstConnector 作为连接符号,否则使用逗号
         /// </summary>
         /// <param name="sqlformat">需要格式化的sql语句</param>
         /// <param name="args">sql参数</param>
-        void Comma(string sqlformat, params object[] args);
+        void Concat(string sqlformat, params object[] args);
+
+        /// <summary> 判断当前构造是否为空(从未执行过Append,And,Or或Concat)
+        /// </summary>
+        bool IsEmpty();
     }
 }

@@ -1,4 +1,4 @@
-像 string.Format 那样去写sql~   
+#blqw.FQL 像 string.Format 那样去写sql~   
   
 ##特色
 #### 轻量
@@ -13,6 +13,12 @@
 *ps:项目依赖[blqw.Literacy](https://code.csdn.net/jy02305022/blqw.Literacy)*  
 
 ##更新日志
+#### 2014.11.05
+* 直接引入Literacy源码,不用在额外引用项目
+* IFQLBuilder修改方法名 Comma 为 Concat(bate阶段会发生对象命名修改的情况,请见谅)
+* IFQLBuilder增加IsEmpty()方法判断是否从未执行过Append,And,Or或Concat方法
+* 小幅度优化代码
+
 #### 2014.10.10
 * 优化格式化机制:现在"{0:Name}"除了属性,还会匹配公共的字段
 

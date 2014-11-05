@@ -29,11 +29,13 @@ namespace blqw
         {
             _provider = provider;
             CommandText = commandText;
-            DbParameters = parameters;
+            DbParameters = parameters ?? EmptyDbParameters;
             _callback = callback;
             _argumentCount = argumentCount;
         }
-
+        /// <summary> 这是一个空的DbParameter数组
+        /// </summary>
+        static readonly DbParameter[] EmptyDbParameters = new DbParameter[0];
         /// <summary> 导入返回参数
         /// </summary>
         public void ImportOutParameter()

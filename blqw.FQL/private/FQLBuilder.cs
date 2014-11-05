@@ -8,15 +8,15 @@ namespace blqw
 {
     struct FQLBuilder : IFQLBuilder
     {
-        private ThreadStart _callback; //返回值的回调
-        private IFQLProvider _provider; //格式化机制
-        private List<string> _commandTexts; //sql语句集合
-        private List<DbParameter> _parameters; //参数集合
-        private int _commandTextsLimit; //sql语句数量限制
-        private int _parametersLimit; //参数数量限制
-        private int _argumentStart; //参数化名称的起始值
-        private string _firstConnector; //首次连接语句时使用的符号
-        private bool _first;
+        private ThreadStart _callback;          //返回值的回调
+        private IFQLProvider _provider;         //格式化机制
+        private List<string> _commandTexts;     //sql语句集合
+        private List<DbParameter> _parameters;  //参数集合
+        private int _commandTextsLimit;         //sql语句数量限制
+        private int _parametersLimit;           //参数数量限制
+        private int _argumentStart;             //参数化名称的起始值
+        private string _firstConnector;         //首次连接语句时使用的符号
+        private bool _first;                    //是否为首次拼接sql
 
         public FQLBuilder(string firstConnector, IFQLProvider provider, string commandText, DbParameter[] parameters, ThreadStart callback, int argumentCount)
         {
@@ -25,7 +25,7 @@ namespace blqw
             _provider = provider;
             _callback = callback;
             _commandTexts = new List<string>();
-            if (commandText != null)
+            if (commandText != null && commandText.Length > 0)
             {
                 _commandTexts.Add(commandText);
                 _commandTextsLimit = 1;
@@ -35,7 +35,7 @@ namespace blqw
                 _commandTextsLimit = 0;
             }
             _parameters = new List<DbParameter>();
-            if (parameters != null)
+            if (parameters != null && parameters.Length > 0)
             {
                 _parameters.AddRange(parameters);
                 _parametersLimit = parameters.Length;
@@ -95,8 +95,6 @@ namespace blqw
 
         public void Append(string connector, string sqlformat, params object[] args)
         {
-            var r = (FQLResult)FQL.Format(_provider, _argumentStart, sqlformat, args);
-            _argumentStart += args.Length;
             if (_first)
             {
                 _first = false;
@@ -106,6 +104,15 @@ namespace blqw
             {
                 _commandTexts.Add(connector);
             }
+
+            if (args == null || args.Length == 0)
+            {
+                _commandTexts.Add(sqlformat);
+                _commandTextsLimit += 2;
+                return;
+            }
+            var r = (FQLResult)FQL.Format(_provider, _argumentStart, sqlformat, args);
+            _argumentStart += args.Length;
             _commandTexts.Add(r.CommandText);
             _commandTextsLimit += 2;
             _parameters.AddRange(r.DbParameters);
@@ -142,7 +149,7 @@ namespace blqw
             }
         }
 
-        void IFQLBuilder.Comma(string sqlformat, params object[] args)
+        void IFQLBuilder.Concat(string sqlformat, params object[] args)
         {
             Append(",", sqlformat, args);
         }
@@ -174,6 +181,11 @@ namespace blqw
                 _firstConnector = firstConnector,
                 _first = true,
             };
+        }
+
+        public bool IsEmpty()
+        {
+            return _first;
         }
     }
 }
