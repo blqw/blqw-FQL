@@ -20,12 +20,12 @@ namespace blqw
             {
                 return null;
             }
-            return new System.Data.SqlClient.SqlParameter() { Value = value };
+            return new System.Data.SqlClient.SqlParameter() { Value = value, Size = -1 };
         }
 
         public System.Data.Common.DbParameter CreateDbParameter(DbType dbType, Type type)
         {
-            return new System.Data.SqlClient.SqlParameter() { DbType = dbType };
+            return new System.Data.SqlClient.SqlParameter() { DbType = dbType, Size = -1 };
         }
     }
 }
