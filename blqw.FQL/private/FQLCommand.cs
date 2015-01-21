@@ -146,6 +146,26 @@ namespace blqw
                     {
                         throw new FormatException("DbParameter名称已存在,命名参数无效");
                     }
+                    if (dp.ParameterName == null)
+                    {
+                        if (_name == null)
+                        {
+                            throw new FormatException("DbParameter参数必须命名");
+                        }
+                        dp.ParameterName = _name;
+                    }
+                    if (format.Length > 0)
+                    {
+                        dp.Direction = 0;
+                        if (_isIn)
+                        {
+                            dp.Direction |= ParameterDirection.Input;
+                        }
+                        if (_isOut)
+                        {
+                            dp.Direction |= ParameterDirection.Output;
+                        }
+                    }
                     AppendValues(dp);
                     return;
                 case TypeCodes.AnonymousType:
@@ -180,6 +200,10 @@ namespace blqw
                     DbParameter p;
                     if (Values.TryGetValue(key, out p) == false)
                     {
+                        if (arg.Value == null)
+                        {
+                            arg.Value = DBNull.Value;
+                        }
                         Values.Add(key, arg);
                     }
                     else if (object.ReferenceEquals(p, arg) == false)
@@ -202,6 +226,10 @@ namespace blqw
             }
             SqlBuffer.Append(Provider.ParameterPrefix);
             SqlBuffer.Append(p.ParameterName);
+            if (p.Value == null)
+            {
+                p.Value = DBNull.Value;
+            }
             Values.Add(name, p);
         }
         private DbParameter AppendValues(DbParameter value)
@@ -214,6 +242,10 @@ namespace blqw
             DbParameter p;
             if (Values.TryGetValue(key, out p) == false)
             {
+                if (value.Value == null)
+                {
+                    value.Value = DBNull.Value;
+                }
                 Values.Add(key, value);
             }
             else if (object.ReferenceEquals(p, value) == false)
